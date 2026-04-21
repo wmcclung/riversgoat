@@ -335,31 +335,34 @@
 
   /* ═══ RESPONSIVE ═══ */
 
-  /* Mobile — stack headline above Rivers, no overlap.
-     Both elements pulled into normal flex-column flow. */
+  /* Mobile — headline at top, Rivers fills remaining space below.
+     Headline is pulled into flex flow (not absolute) so it
+     genuinely occupies space. Rivers-wrap takes the rest. */
   @media (max-width: 639px) {
     .stage { justify-content: flex-start; }
     .headline {
       position: relative;
       top: auto; left: auto; right: auto;
-      padding: clamp(20px, 5vh, 36px) clamp(16px, 5vw, 24px) 0;
+      padding: clamp(16px, 4vh, 28px) clamp(16px, 5vw, 24px) 0;
+      flex-shrink: 0;
+      z-index: 5;
     }
     .rivers-wrap {
       position: relative;
       bottom: auto; right: auto;
       flex: 1;
       min-height: 0;
-      height: auto;
       width: 100%;
       transform: none;
       padding: 0;
+      display: flex;
       justify-content: flex-end;
-      align-items: flex-end;
+      align-items: flex-start; /* anchor image to TOP of container so overflow goes down, not up */
+      overflow: hidden;        /* clip anything below — never bleeds into headline */
     }
     .rivers {
-      width: 92vw;
+      width: 88vw;
       height: auto;
-      max-height: 100%;
     }
   }
 
