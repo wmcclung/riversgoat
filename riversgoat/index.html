@@ -80,8 +80,8 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 50% 35%, rgba(64, 140, 220, 0.18) 0%, rgba(20, 40, 80, 0.08) 30%, transparent 70%),
-      radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10, 18, 36, 0.4) 0%, rgba(4, 6, 12, 0.95) 100%);
+      radial-gradient(ellipse 80% 60% at 50% 35%, rgba(64, 140, 220, 0.12) 0%, rgba(20, 40, 80, 0.05) 30%, transparent 70%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10, 18, 36, 0.2) 0%, rgba(4, 6, 12, 0.7) 100%);
     z-index: 1;
   }
 
@@ -100,41 +100,78 @@
   .lightning-canvas { z-index: 2; mix-blend-mode: screen; }
   .particle-canvas  { z-index: 4; mix-blend-mode: screen; opacity: 0.9; }
 
-  /* ═══ RIVERS HERO IMAGE ═══
-     Right-anchored at all viewport sizes — headline reads from the
-     left, Rivers stands on the right like a guardian. Use clamp on
-     height so he's never so tall he gets cut off by the headline
-     area above (leave ~45vh breathing room at top on mobile).
-
-     Mobile: translate him DOWN so his head clears the stacked
-     headline block above. On tablet+ his head sits within the frame
-     naturally because the image shrinks into the right half. */
+  /* ═══ RIVERS HERO IMAGE ═══ */
   .rivers-wrap {
     position: absolute;
     bottom: 0;
     right: 0;
     z-index: 3;
-    height: clamp(55vh, 68vh, 78vh);
+    height: clamp(75vh, 90vh, 100vh);
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
     pointer-events: none;
     padding-right: clamp(0px, 2vw, 24px);
-    /* Push down on very narrow screens so head clears the stacked type */
-    transform: translateY(clamp(0px, 4vh, 40px));
+    transform: translateY(clamp(0px, 3vh, 30px));
   }
   .rivers {
     height: 100%;
     width: auto;
     max-width: none;
     filter:
-      drop-shadow(0 0 30px rgba(80, 180, 255, 0.55))
-      drop-shadow(0 0 80px rgba(40, 100, 220, 0.4))
-      drop-shadow(0 20px 40px rgba(0, 0, 0, 0.9));
+      drop-shadow(0 0 6px rgba(180, 220, 255, 0.4))
+      drop-shadow(0 0 28px rgba(100, 170, 255, 0.35))
+      drop-shadow(0 0 70px rgba(60, 140, 240, 0.25))
+      drop-shadow(0 20px 40px rgba(0, 0, 0, 0.7));
+    /* Fade the bottom so the knee cut-off dissolves into darkness */
+    -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 94%);
+    mask-image: linear-gradient(to bottom, black 55%, transparent 94%);
     animation: river-breathe 3.4s ease-in-out infinite, river-flicker 0.14s steps(2) infinite;
     transform-origin: center bottom;
     will-change: transform, filter;
+    transition: filter 0.28s ease-out;
   }
+
+  /* ── Strike pulse: brightness kick synced to major bolts ── */
+  .rivers.lit {
+    filter:
+      brightness(1.35) saturate(1.3)
+      drop-shadow(0 0 8px rgba(255, 255, 255, 0.95))
+      drop-shadow(0 0 32px rgba(200, 235, 255, 0.85))
+      drop-shadow(0 0 100px rgba(120, 190, 255, 0.7));
+    transition: filter 0.04s ease-out;
+  }
+
+  /* ── Theatrical FX modes triggered by scene director ────── */
+  /* electric: blown-out white — pure energy flash */
+  .stage[data-fx="electric"] .rivers {
+    filter:
+      brightness(0) invert(1) brightness(2.4)
+      drop-shadow(0 0 6px rgba(255, 255, 255, 1))
+      drop-shadow(0 0 28px rgba(200, 235, 255, 0.95))
+      drop-shadow(0 0 90px rgba(120, 190, 255, 0.85));
+    transition: filter 0.05s ease-out;
+  }
+  /* silhouette: dark figure, electric aura only */
+  .stage[data-fx="silhouette"] .rivers {
+    filter:
+      brightness(0)
+      drop-shadow(0 0 14px rgba(120, 200, 255, 0.85))
+      drop-shadow(0 0 50px rgba(60, 150, 255, 0.7))
+      drop-shadow(0 0 120px rgba(40, 110, 220, 0.5));
+    transition: filter 0.22s ease-out;
+  }
+  /* outline: X-ray line-art */
+  .stage[data-fx="outline"] .rivers {
+    filter:
+      brightness(0) invert(1)
+      drop-shadow(0 0 2px #fff)
+      drop-shadow(0 0 10px rgba(140, 210, 255, 0.95))
+      drop-shadow(0 0 32px rgba(80, 170, 255, 0.8))
+      drop-shadow(0 0 80px rgba(40, 120, 220, 0.6));
+    transition: filter 0.18s ease-out;
+  }
+
   /* Gentle rise-fall, like the image is charging */
   @keyframes river-breathe {
     0%, 100% { transform: scale(1) translateY(0); }
@@ -298,10 +335,38 @@
 
   /* ═══ RESPONSIVE ═══ */
 
+  /* Mobile — stack headline above Rivers, no overlap.
+     Both elements pulled into normal flex-column flow. */
+  @media (max-width: 639px) {
+    .stage { justify-content: flex-start; }
+    .headline {
+      position: relative;
+      top: auto; left: auto; right: auto;
+      padding: clamp(20px, 5vh, 36px) clamp(16px, 5vw, 24px) 0;
+    }
+    .rivers-wrap {
+      position: relative;
+      bottom: auto; right: auto;
+      flex: 1;
+      min-height: 0;
+      height: auto;
+      width: 100%;
+      transform: none;
+      padding: 0;
+      justify-content: flex-end;
+      align-items: flex-end;
+    }
+    .rivers {
+      width: 92vw;
+      height: auto;
+      max-height: 100%;
+    }
+  }
+
   /* Tablet — Rivers bigger, headline cap-width so type doesn't
-     collide with him. Reset the mobile downward-push. */
+     collide with him. */
   @media (min-width: 640px) {
-    .rivers-wrap { height: 80vh; transform: translateY(0); }
+    .rivers-wrap { height: 92vh; }
     .headline { max-width: 58%; }
   }
 
@@ -309,7 +374,8 @@
      vertically-centered. Larger display type unlocked. */
   @media (min-width: 1024px) {
     .rivers-wrap {
-      height: 96vh;
+      height: 100vh;
+      transform: none;
       padding-right: clamp(24px, 3vw, 48px);
     }
     .headline {
@@ -464,10 +530,19 @@
     kickParticles(x1, y1, 40);
   }
 
-  /* Major strike flash — white overlay ~50ms */
+  const riversEl = document.getElementById('rivers');
+
+  /* Major strike flash — white overlay ~50ms, Rivers lights up in sync */
   function triggerFlash() {
     flash.style.opacity = '0.85';
     setTimeout(() => { flash.style.opacity = '0'; }, 60);
+    if (riversEl) {
+      riversEl.classList.add('lit');
+      setTimeout(() => riversEl.classList.remove('lit'), 160);
+    }
+    if (typeof window.__riversScenePulse === 'function') {
+      window.__riversScenePulse();
+    }
   }
 
   /* ── Draw bolt ─────────────────────────────────────────────
@@ -647,6 +722,42 @@
     });
   });
 
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   SCENE DIRECTOR
+   On major strikes, occasionally snaps Rivers into a theatrical
+   FX mode for a short beat, then returns to natural.
+   Probabilities are tuned so it feels surprising, not spammy:
+     ~25% of major strikes → electric (white blown-out, 120ms)
+     ~12% of major strikes → silhouette (dark figure, 280ms)
+     ~8%  of major strikes → outline (X-ray, 220ms)
+   ═══════════════════════════════════════════════════════════════ */
+(function() {
+  const stage = document.getElementById('stage');
+  let fxLocked = false;
+
+  window.__riversScenePulse = function() {
+    if (fxLocked) return;
+    const r = Math.random();
+    let fx, duration;
+    if (r < 0.25) {
+      fx = 'electric'; duration = 120;
+    } else if (r < 0.37) {
+      fx = 'silhouette'; duration = 280;
+    } else if (r < 0.45) {
+      fx = 'outline'; duration = 220;
+    } else {
+      return; // most strikes: no FX change, just the .lit pulse
+    }
+    fxLocked = true;
+    stage.setAttribute('data-fx', fx);
+    setTimeout(() => {
+      stage.removeAttribute('data-fx');
+      // Small cooldown so FX don't stack on rapid flurries
+      setTimeout(() => { fxLocked = false; }, 400);
+    }, duration);
+  };
 })();
 
 /* ═══════════════════════════════════════════════════════════════
