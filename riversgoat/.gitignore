@@ -1,0 +1,8 @@
+# Node / build artifacts (none here, but just in case)
+node_modules/
+.DS_Store
+*.log
+
+# Editor
+.vscode/
+.idea/
