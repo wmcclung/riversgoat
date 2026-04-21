@@ -343,6 +343,7 @@
     .headline {
       position: relative;
       top: auto; left: auto; right: auto;
+      order: 1;                /* headline first */
       padding: clamp(16px, 4vh, 28px) clamp(16px, 5vw, 24px) 0;
       flex-shrink: 0;
       z-index: 5;
@@ -350,6 +351,7 @@
     .rivers-wrap {
       position: relative;
       bottom: auto; right: auto;
+      order: 2;                /* Rivers below headline */
       flex: 1;
       min-height: 0;
       width: 100%;
@@ -357,8 +359,8 @@
       padding: 0;
       display: flex;
       justify-content: flex-end;
-      align-items: flex-start; /* anchor image to TOP of container so overflow goes down, not up */
-      overflow: hidden;        /* clip anything below — never bleeds into headline */
+      align-items: flex-start;
+      overflow: hidden;
     }
     .rivers {
       width: 88vw;
