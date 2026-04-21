@@ -366,6 +366,9 @@
       width: 88vw;
       height: auto;
       mix-blend-mode: screen;
+      /* Override the bottom-only desktop mask with a radial that fades all edges */
+      -webkit-mask-image: radial-gradient(ellipse 82% 84% at 48% 40%, black 20%, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0.4) 65%, transparent 80%);
+      mask-image: radial-gradient(ellipse 82% 84% at 48% 40%, black 20%, rgba(0,0,0,0.85) 45%, rgba(0,0,0,0.4) 65%, transparent 80%);
     }
   }
 
